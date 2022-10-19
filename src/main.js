@@ -56,6 +56,7 @@ function validateOpts(opts = {}) {
     fidName: 'FID',
     clsName: 'CLS',
     fcpName: 'FCP',
+    ttfbName: 'TTFB',
     filters: '',
     debugDim: '',
     ...opts,

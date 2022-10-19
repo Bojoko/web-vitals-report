@@ -27,6 +27,7 @@ export async function getWebVitalsData(state, opts) {
     [opts.fidName]: 'FID',
     [opts.clsName]: 'CLS',
     [opts.fcpName]: 'FCP',
+    [opts.ttfbName]: 'TTFB',
   };
 
   if (rows.length === 0) {
@@ -48,6 +49,7 @@ export async function getWebVitalsData(state, opts) {
       FID: getDefaultValue(),
       CLS: getDefaultValue(),
       FCP: getDefaultValue(),
+      TTFB: getDefaultValue(),
     };
   };
 
@@ -91,7 +93,7 @@ export async function getWebVitalsData(state, opts) {
     // reduce the date range or add filters) and manually combine the data
     // yourself.
     if (metric !== 'LCP' && metric !== 'FID' && metric !== 'CLS'
-        && metric !== 'FCP') {
+        && metric !== 'FCP' && metric !== 'TTFB') {
       throw new WebVitalsError('unexpected_metric', metric);
     }
 
@@ -197,7 +199,8 @@ function buildReportRequest(state, opts) {
     {
       dimensionName: opts.metricNameDim,
       operator: 'IN_LIST',
-      expressions: [opts.lcpName, opts.fidName, opts.clsName, opts.fcpName],
+      expressions: [opts.lcpName, opts.fidName, opts.clsName, opts.fcpName,
+        opts.ttfbName],
     },
   ];
 

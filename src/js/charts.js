@@ -223,7 +223,7 @@ function drawDebugInfo(pages) {
           </th>
           <th class="Table-debugHeader" colspan="4" id="${path}">${path}</th>
         </tr>
-        ${['LCP', 'FID', 'CLS', 'FCP'].map((metric) => `
+        ${['LCP', 'FID', 'CLS', 'FCP', 'TTFB'].map((metric) => `
           ${Object.keys(page[metric]).map((segment) => {
             let debugEntries = page[metric][segment].debug;
             if (debugEntries) {
@@ -307,6 +307,7 @@ function score(metric, p75) {
     FID: [100, 300],
     CLS: [0.1, 0.25],
     FCP: [1800, 300],
+    TTFB: [800, 1800],
     // LCP: [1100, 2000],
     // FID: [4, 10],
     // CLS: [0.1, 0.25],
@@ -348,6 +349,7 @@ export function renderCharts(report, reportOpts) {
     const p98 = p(98, metric.values);
 
     switch (name) {
+      case 'TTFB':
       case 'FCP':
       case 'LCP':
         maxValue = Math.max(Math.ceil(p98 / 1000) * 1000, 3000);

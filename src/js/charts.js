@@ -109,9 +109,9 @@ function drawTimeline(name, dateValues) {
           seriesObj[segmentName] || {name: segmentName, data: []};
 
       const segmentValues = values[segmentName];
-      if (segmentValues.length > 8) {
+      if (segmentValues.length > 20) {
         seriesObj[segmentName].data = seriesObj[segmentName].data || [];
-        seriesObj[segmentName].data.push([timestamp, p(75, segmentValues)]);
+        seriesObj[segmentName].data.push([timestamp, p(90, segmentValues)]);
       }
     }
   }
@@ -119,7 +119,7 @@ function drawTimeline(name, dateValues) {
   Highcharts.chart(`timeline-${name}`, {
     chart: {type: 'spline'},
     colors: COLORS,
-    title: {text: `${name} over time (p75)`},
+    title: {text: `${name} over time (p90)`},
     xAxis: {type: 'datetime'},
     yAxis: {min: 0},
     series: [...Object.values(seriesObj)],
@@ -144,7 +144,7 @@ function drawSummary(metric, segments) {
   let html = ``;
 
   for (const [name, values] of Object.entries(segments)) {
-    const result = p75(values);
+    const result = p90(values);
 
     html += `
     <span class="Report-metricSummaryItem">
@@ -181,7 +181,7 @@ function drawTable(id, dimensionName, dimensionData) {
             : ''}
           <td class="Table-segment">${e(segment)}</td>
           ${metricNames.map((metric) => {
-            const result = p75(values[metric][segment]);
+            const result = p90(values[metric][segment]);
             return `
               <td>
                 <div class="Score Score--${score(metric, result)}">
@@ -268,8 +268,8 @@ function drawDebugInfo(pages) {
                     </td>
                     <td class="Table-value">${values.length}</td>
                     <td>
-                      <div class="Score Score--${score(metric, p75(values))}">
-                        ${p75(values)}
+                      <div class="Score Score--${score(metric, p90(values))}">
+                        ${p90(values)}
                       </div>
                     </td>
                   </tr>
@@ -283,8 +283,8 @@ function drawDebugInfo(pages) {
                     <td class="Table-value">${otherValues.length}</td>
                     <td>
                       <div class="Score Score--${
-                        score(metric, p75(otherValues))}">
-                        ${p75(otherValues)}
+                        score(metric, p90(otherValues))}">
+                        ${p90(otherValues)}
                       </div>
                     </td>
                   </tr>
@@ -301,7 +301,7 @@ function drawDebugInfo(pages) {
   `;
 }
 
-function score(metric, p75) {
+function score(metric, p90) {
   const thresholds = {
     LCP: [2500, 4000],
     FID: [100, 300],
@@ -312,13 +312,13 @@ function score(metric, p75) {
     // FID: [4, 10],
     // CLS: [0.1, 0.25],
   };
-  if (p75 <= thresholds[metric][0]) {
+  if (p90 <= thresholds[metric][0]) {
     return 'good';
   }
-  if (p75 <= thresholds[metric][1]) {
+  if (p90 <= thresholds[metric][1]) {
     return 'ni';
   }
-  if (p75 > thresholds[metric][1]) {
+  if (p90 > thresholds[metric][1]) {
     return 'poor';
   }
   return 'unknown';
@@ -328,11 +328,8 @@ function p(percentile, values) {
   return values[Math.floor((values.length) * (percentile / 100))];
 }
 
-function p75(values) {
-  if (values && values.length > 8) {
-    return p(75, values);
-  }
-  return '-'; // Insufficient data
+function p90(values) {
+  return values.length > 20 ? p(90, values) : '-';
 }
 
 export function renderCharts(report, reportOpts) {

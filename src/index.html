@@ -194,6 +194,7 @@
           const config = {
             client_id: '{{ client_id }}',
             scope: '{{ scope }}',
+            plugin_name: 'chat',
           }
           gapi.auth2.init(config).then(resolve, reject);
         });

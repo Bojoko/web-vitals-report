@@ -15,7 +15,6 @@
  */
 
 import {openDB} from 'idb';
-import {measureCaughtError} from './analytics.js';
 import {getAccessToken} from './auth.js';
 import {progress} from './Progress.js';
 import {get} from './store.js';
@@ -416,7 +415,6 @@ function getDB() {
 }
 
 async function handleDBError(error) {
-  measureCaughtError(error);
   if (dbPromise) {
     const db = await dbPromise;
     await db.clear('data');

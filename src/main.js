@@ -16,7 +16,6 @@
 
 import {html, render} from 'lit-html';
 import {addAlert} from './js/alerts.js';
-import {initAnalytics, measureReport} from './js/analytics.js';
 import {getAccountSummaries, getSegments} from './js/api.js';
 import {checkAuthStatus, getAuthInstance, onSignInChange, userIsSignedIn} from './js/auth.js';
 import {renderCharts} from './js/charts.js';
@@ -182,15 +181,8 @@ async function onSubmit(event) {
   } catch (requestError) {
     console.error(requestError);
     addAlert(requestError);
-    error = requestError;
   } finally {
     setState({isFetchingData: false});
-    measureReport({
-      state: getState(),
-      duration: Math.round(performance.now() - startTime),
-      report,
-      error,
-    });
 
     // Persist the average number of rows per day in the report. This is
     // used to determine whether subsequent reports should start off being
@@ -378,8 +370,6 @@ function handleSignInChange(isSignedIn) {
 }
 
 async function init() {
-  initAnalytics();
-
   const isSignedIn = await checkAuthStatus();
   handleSignInChange(isSignedIn);
 

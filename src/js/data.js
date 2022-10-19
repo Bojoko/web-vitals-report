@@ -26,6 +26,7 @@ export async function getWebVitalsData(state, opts) {
     [opts.lcpName]: 'LCP',
     [opts.fidName]: 'FID',
     [opts.clsName]: 'CLS',
+    [opts.fcpName]: 'FCP',
   };
 
   if (rows.length === 0) {
@@ -46,6 +47,7 @@ export async function getWebVitalsData(state, opts) {
       LCP: getDefaultValue(),
       FID: getDefaultValue(),
       CLS: getDefaultValue(),
+      FCP: getDefaultValue(),
     };
   };
 
@@ -88,7 +90,8 @@ export async function getWebVitalsData(state, opts) {
     // The only solution to this is to make more granular requests (e.g.
     // reduce the date range or add filters) and manually combine the data
     // yourself.
-    if (metric !== 'LCP' && metric !== 'FID' && metric !== 'CLS') {
+    if (metric !== 'LCP' && metric !== 'FID' && metric !== 'CLS'
+        && metric !== 'FCP') {
       throw new WebVitalsError('unexpected_metric', metric);
     }
 
@@ -194,7 +197,7 @@ function buildReportRequest(state, opts) {
     {
       dimensionName: opts.metricNameDim,
       operator: 'IN_LIST',
-      expressions: [opts.lcpName, opts.fidName, opts.clsName],
+      expressions: [opts.lcpName, opts.fidName, opts.clsName, opts.fcpName],
     },
   ];
 
